@@ -1,3 +1,4 @@
+var port = process.env.PORT || 3000,
 var express = require('express')
 var app = express()
 var server = require('http').Server(app);
@@ -15,8 +16,8 @@ app.get('/', function (req, res) {
 
 
 
-server.listen(8081, () => {
-  console.log("Listening on port 8081")
+server.listen(port, () => {
+  console.log(`server listening on port ${port}`);
 })
 
 
