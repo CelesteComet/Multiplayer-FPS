@@ -19,8 +19,9 @@ function Game() {
   engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
   scene = new BABYLON.Scene(engine);
 
-  camera = new BABYLON.UniversalCamera('Camera', new BABYLON.Vector3(10, 30, 0), scene);
-  camera.attachControl(canvas, true);
+  camera = new BABYLON.UniversalCamera('Camera', new BABYLON.Vector3(0, 200, 0), scene);
+  camera.setTarget(BABYLON.Vector3.Zero());
+  //camera.attachControl(canvas, true);
   camera.keysUp.push(87);
   camera.keysDown.push(83);
   camera.keysLeft.push(65);
@@ -50,23 +51,41 @@ Game.prototype.onKeyDown = function(e) {
     87: "W",
     68: "D",
     83: "S",
-    65: "A" 
+    65: "A",
+    80: "P",
+    39: "right",
+    37: "left"
   }
 
   var keyPressed = inputToControlMap[e.keyCode];
 
   switch(keyPressed) {
     case "W":
-      //this.player.vZ += 0.01;
+      this.player.vZ = 0.4 * 0.98
       break;
     case "D":
-      //this.player.vX += 0.01;
+      this.player.vX = 0.4 * 0.98
       break;
     case "S":
-      //this.player.vZ -= 0.01;
+      this.player.vZ = -0.4 * 0.98
       break;
     case "A":
-      //this.player.vX -= 0.01;
+      this.player.vX = -0.4 * 0.98
+      break;
+    case "right":
+      console.log("RIGHT")
+      this.player.rotation.y += 0.1;
+      break;
+    case "left":
+      this.player.rotation.y -= 0.1;
+      break;
+    case "P":
+      camera = new BABYLON.UniversalCamera('Camera', new BABYLON.Vector3(0, 200, 0), scene);
+      camera.setTarget(new BABYLON.Vector3(0,0,0));
+      break;
+    case "L":
+      camera.parent = this.player;
+      camera.rotation.x = 0;
       break;
     default:
       break;
@@ -74,6 +93,9 @@ Game.prototype.onKeyDown = function(e) {
 }
 
 Game.prototype.onKeyUp = function() {
+  this.player.vX = 0;
+  this.player.vZ = 0;
+  this.player.vY = 0;
 }
 
 
@@ -122,8 +144,10 @@ Game.prototype.onLoadingComplete = function() {
   EnemyManager.create(1);
   EnemyManager.list[1].position = new BABYLON.Vector3(1, 0, 5);
   var id = Math.random();
-  PlayerManager.create(id);
-  
+  this.player = PlayerManager.create(id);
+  camera.parent = this.player;
+  camera.position = new BABYLON.Vector3(0,0,0);
+  camera.rotation.x = 0;
   
 
   socket.on("playerResponse", function(data) {
@@ -133,7 +157,6 @@ Game.prototype.onLoadingComplete = function() {
         // if it is not a player, and enemy has not been created yet, create an enemy at position
         EnemyManager.create(id)
       } else if(EnemyManager.list[id]) {
-        debugger;
         EnemyManager.list[id].position.x = data[id].x;
         EnemyManager.list[id].position.y = data[id].y;
         EnemyManager.list[id].position.z = data[id].z;
@@ -144,10 +167,11 @@ Game.prototype.onLoadingComplete = function() {
 
   
   engine.runRenderLoop(function () { // Register a render loop to repeatedly render the scene    
+    this.captureKeys();
     BulletConstructor.update();
     PlayerManager.update();
     scene.render();
-  });
+  }.bind(this));
   window.addEventListener("resize", function () { // Watch for browser/canvas resize events
     engine.resize();
   });

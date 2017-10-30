@@ -9,9 +9,9 @@ function PlayerConstructor() {
       depth: 2
     }, scene);
 
-    //debugger;
-    
-
+    player.vX = 0;
+    player.vY = 0;
+    player.vZ = 0;
 
 
     // collisions
@@ -23,9 +23,9 @@ function PlayerConstructor() {
     
 
     player.update = function() {
-      var camPosition = camera.position.clone();
-      camPosition.y -= 10;
-      player.position = camPosition;
+      player.position.x += player.vX;
+      player.position.y += player.vY;
+      player.position.z += player.vZ;
     }
 
     // give the player an id
@@ -44,7 +44,7 @@ function PlayerConstructor() {
       this.list[i].update();
       socket.emit('playerUpdate', {
         id: i,
-        vector3: this.list[i].camera.position
+        vector3: this.list[i].position
       })
     }
 
