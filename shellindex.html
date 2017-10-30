@@ -1,0 +1,578 @@
+<!doctype html>
+<html>
+<head>
+    <title>Shell Shockers</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,900" rel="stylesheet">
+    <link rel="icon" type="image/png" href="http://shellshock.io/favicon.png">
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="Pragma" content="no-cache" />
+
+    <meta name="description" content="Eggs & Soldiers is a dish. It's also a game. Play in your browser for FREE - no download required!" />
+</head>
+<style>
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        background-clip: padding-box;
+        font-family: Nunito, sans-serif;
+    }
+
+    a {
+        color: #532a19;
+    }
+
+    .bigVersion {
+        font-size: 30px;
+        font-weight: bolder;
+        text-align: center;
+        position: absolute;
+        padding: 16px;
+        top: -60px;
+        width: 100%;
+    }
+
+    .littleVersion {
+        position: absolute;
+        top: 0; left: 0;
+        padding: 16px;
+    }
+
+    .thisPlayer {
+        background: rgba(255, 192, 0, 0.75);
+        color: #ff0;
+        font-weight: 700;
+        font-size: 18px;
+
+        border-radius: 4px;
+        padding-top: 2px; padding-bottom: 2px;
+        padding-left: 8px; padding-right: 8px;
+        margin: 2px;
+    }
+
+    .otherPlayer {
+        background: rgba(0, 0, 0, .1);
+        color: #fff;
+        font-weight: 600;
+        font-size: 16px;
+
+        border-radius: 4px;
+        padding-top: 2px; padding-bottom: 1px;
+        padding-left: 8px; padding-right: 8px;
+        margin: 2px;
+    }
+
+    .icon {
+        -webkit-filter: drop-shadow(1px 1px 2px #222);
+        filter: drop-shadow(1px 1px 2px #000);
+        cursor: pointer;
+        pointer-events: all;
+    }
+
+    .label {
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        text-shadow:
+            0px 0px 1px #000,
+            0px 1px 2px #000;
+    }
+
+    .settings {
+        position: absolute;
+        right: 16px;
+        top: 64px;
+        background: white;
+        border-style: solid;
+        border-radius: 10px;
+        border-color: var(--egg-brown);
+        border-width: 4px;
+    }
+
+    .key {
+        color: black;
+        display: inline-block;
+        position: relative;
+        left: -50%;
+        background: #fff;
+        font-size: 20px;
+        font-weight: 900;
+        text-align: center;
+        width: 36px;
+        height: 36px;
+        padding-top: 6px;
+        border: solid;
+        border-width: 2px;
+        border-color: #000;
+        border-radius: 8px;
+        border-bottom-width: 4px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    .captionCenter {
+        position: relative;
+        left: -50%;
+        font-size: 16px;
+        font-weight: 600;
+        color: #000;
+        text-align: center;
+    }
+
+    .captionLeft {
+        position: relative;
+        font-size: 16px;
+        font-weight: 600;
+        color: #000;
+    }
+
+    html, body {
+        --egg-brown: #532a19;
+        color: var(--egg-brown);
+        background: var(--egg-brown);
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+    input, textarea, select:focus {
+        font-weight: 600;
+        outline: none;
+    }
+
+    .chat {
+        background: transparent;
+        position: absolute;
+        resize: none;
+        border-style: solid;
+        border-width: 0px;
+        padding: 4px;
+        padding-left: 16px;
+        padding-right: 16px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        pointer-events: none;
+        overflow: hidden;
+        text-shadow:
+            0px 0px 1px #000,
+            0px 1px 2px #000;
+    }
+
+    .chatBox {
+        height: 120px;
+    }
+
+    .shadow {
+        color: #fff;
+        text-shadow:
+            0px 0px 1px #000,
+            0px 1px 2px #000;
+    }
+
+    .chatInput {
+        color: #ff0;
+        visibility: none;
+    }
+
+    h1 {
+        font-size: 24pt;
+        font-weight: 900;
+        margin: 4px;
+    }
+
+    h2 {
+        font-size: 16pt;
+        font-weight: 700;
+        margin: 4px;
+    }
+
+    p {
+        margin: 0px;
+        padding: 1px;
+        font-size: 12pt;
+        font-weight: 600;
+        line-height: 16px;
+    }
+
+    .textInput {
+        padding: 4px;
+        padding-left: 8px;
+        border-style: solid;
+        border-width: 4px;
+        border-color: #532a19;
+        border-radius: 12px;
+        font-size: 16pt;
+    }
+
+    .button {
+        display: inline-block;
+        border-radius: 12px;
+        padding: 8px;
+        margin: 4px;
+        background-color: var(--egg-brown);
+        color: white;
+        font-size: 16pt;
+        cursor: pointer;
+    }
+
+    .center {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .arrow-up {
+        width: 0;
+        height: 0;
+        left: 50%;
+        right: 50%;
+        margin: auto;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 20px solid white;
+    }
+
+    .arrow-down {
+        width: 0;
+        height: 0;
+        left: 50%;
+        right: 50%;
+        margin: auto;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 20px solid white;
+    }
+
+    .arrow-right {
+        width: 0;
+        height: 0;
+        border-top: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 20px solid white;
+    }
+
+    .arrow-left {
+        width: 0;
+        height: 0;
+        border-top: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-right: 20px solid white;
+    }
+</style>
+<script>var version = '0.7.0';</script>
+<script src="!host_specific/servers.js?v=1509125048"></script>
+<script src="src/babylon.custom.js?v=1508355461"></script>
+<script src="src/shellshock.min.js?v=1509045842"></script>
+</head>
+<body>
+    <!-- Changelog -->
+    <div id="changelog" style="display: none;">
+        <div style="text-align: left; white-space: nowrap; font-size: 16px">
+            <b style="font-size: 20px;">What's New</b><br>
+            <li>New maps and obstacles!
+            <br><br><b style="font-size: 20px;">Fixes</b><br>
+            <li>CAPSLOCK no longer breaks keyboard controls
+            <li>Control configuration issue in Firefox
+            <li>Inconsistent loading of some map elements
+            <li>Pesky spawn distribution problems
+        </div>
+    </div>
+
+    <div id="offCanvasContainer" style="visibility: hidden;"></div>
+    <div id="container" style="width: 100%; height: 100%; overflow: hidden">
+    <div id="GAME" style="display: none; width: 100%; height: 100%">
+      <div id="gameCanvasContainer" style="width: 100%; height: 100%;"></div>
+        <div style="pointer-events: none;">
+            <!-- FPS -->
+            <div id="FPS" class="shadow" style="
+                position: absolute;
+                top: 70px;
+                left: 16px;
+            "></div>
+
+            <!-- Ping -->
+            <div class="shadow" style="position: absolute; top: 95px; left: 16px;">
+                PING:
+                <b><span id="PING"></span></b>
+            </div>
+
+            <!-- Weapon -->
+            <div id="WEAPON" class="shadow" style="position: absolute; right: 16px; bottom: 16px">
+                <h2 id="WEAPON_NAME" style="
+                    text-align: right;
+                    padding: 8px;
+                "></h2>
+                <h1 id="AMMO" style="
+                    text-align: right;
+                    font-size: 56px;
+                    line-height: 40px;
+                "></h1>
+            </div>
+
+            <!-- Health -->
+            <div id="HEALTH_BOX" style="
+                position: absolute;
+                top: 16px;
+                left: 16px;
+                display: block;
+                width: 310px;
+                height: 40px;
+                background: rgba(0, 0, 0, 0.25);
+                border-radius: 8px;
+            ">
+                <div id="HEALTH_BAR" style="
+                    display: block;
+                    margin: 4px;
+                    width: 200px;
+                    height: 32px;
+                    background: #fe1;
+                    border-radius: 4px;
+                "></div>
+            </div>
+
+            <!-- Streak -->
+            <div id="BEST_STREAK" class="shadow" style="
+                position: absolute;
+                text-align: center;
+                font-size: 16pt;
+                font-weight: 700;
+                width: 100%;
+                top: 16px;
+            ">BEST KILL STREAK: 0</div>
+
+            <!-- Kill -->
+            <div id="KILL_BOX" class="shadow" style="
+                position: absolute;
+                display: none;
+                width: 100%;
+                transform-origin: center bottom;
+                bottom: 10%;
+                color: #fff;
+                text-align: center;
+            ">
+                <h2 style="font-weight: 900">YOU KILLED</h2>
+                <h1 style="font-size: 50px;" id="KILLED_NAME"></h1>
+                <i><h2 id="KILL_STREAK" style="text-align: center; padding-top: 10px;"></h2></i>
+            </div>
+
+            <!-- Death -->
+            <div id="DEATH_BOX" class="shadow" style="
+                position: absolute;
+                display: none;
+                width: 100%;
+                transform-origin: center top;
+                top: 20%;
+                color: #fff;
+                text-align: center;
+            ">
+                <h1 style="font-weight: 900">YOU WERE KILLED BY</h1>
+                <h1 style="font-size: 80px;" id="KILLED_BY_NAME"></h1>
+                <h2 id="RESPAWN"></h2>
+            </div>
+
+          <!-- Chat -->
+          <textarea id="CHAT_BOX" class="chat" readonly style="
+                position: absolute;
+                width: 100%;
+                height: 150px;
+                left: 0px;
+                top: 35%;
+            "></textarea>
+          <!--<input id="CHAT_INPUT" disabled type="text" maxlength="160" class="chatInput chat" placeholder="Press ENTER to chat" style="display: none;"/>-->
+            <!-- Player List -->
+            <div id="playerSlot" tag="playerSlot" style="display: none">
+                <span tag="name"></span>
+                <span tag="score" style="display: inline-block; width: 40px"></span>
+            </div>
+            <div id="playerList" class="shadow" style="position: absolute; right: 16px; top: 64px; text-align: right;">
+            </div>
+
+            <!-- Help -->
+            <div id="help" class="shadow" style="
+                position: absolute;
+                left: 16px;
+                bottom: 16px;
+                color: #fff;
+            ">
+                <div style="float: left; text-align: right">
+                    <h1>WASD:</h1>
+                    <h1>SPACE:</h1>
+                    <h1>R:</h1>
+                    <h1>E:</h1>
+                </div>
+                <div style="float: right">
+                    <h1>Move</h1>
+                    <h1>Jump</h1>
+                    <h1>Reload</h1>
+                    <h1>Swap Weapon</h1>
+                </div>
+                <div style="position: absolute; left: 0; bottom: 0; padding-bottom: 8px; text-align: center">
+                    <img class="icon" src="img/settings.png" onclick="openSettingsMenu()"/>
+                    <p class="shadow">Change</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Title screen -->
+    <div id="TITLE" class="title" style="display: none; width: 100%; height: 100%; background: #a8d2a5;">
+        <!-- Version -->
+        <p id="version" class="littleVersion">
+            Version <script>document.write(version);</script><br><br>
+            [<u style="cursor: pointer" onclick="showChangelog()">changelog</u>]
+        </p>
+
+        <div style="position: relative; display: inline-block; margin: auto; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <!-- NEW Version -->
+            <p id="newVersion" class="bigVersion" style="display: none">
+                NEW Version <script>document.write(version);</script>
+                [<u style="cursor: pointer" onclick="showChangelog()">changelog</u>]
+            </p>
+
+            <span style="display: table-cell; width: 360px;">
+                <img src="img/logo.png" style="width: 100%;"/>
+
+                <!-- Login dialog -->
+                <br>
+                <div style="text-align: center"><a href="http://www.shellshock.io" style="text-decoration: none" target="_window">www.shellshock.io</a></div>
+                <br>
+                <span style="display: table-cell; padding-right: 4px">
+                    <input id="username" type="text" class="textInput" style="width: 100%" maxlength="14" autofocus placeholder="Your Name"/>
+                </span>
+                <span id="PLAY_BUTTON" class="button" style="display: table-cell; width: 20%;" onclick="login()"><h2 style="color: white;">PLAY</h2></span>
+                <div style="margin-top: 8px;">
+                    <div class="fb-login-button" data-max-rows="1" data-size="small" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+                    <div class="fb-like" data-href="https://www.facebook.com/ShellShockersGame" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
+                    <div style="float: right;">
+                        <b>Server:&nbsp;</b>
+                        <select id="serverSelect" style="font-size: 12px;" onchange="selectServer(this.selectedIndex)">
+                        </select>
+                    </div>
+                </div>
+                <div style="padding-top: 12px; line-height: 20px;" id="stats"></div>
+            </span>
+
+            <span style="display: table-cell; padding-left: 20px;">
+                <div id="characterCanvasContainer" class="textInput" style="
+                    width: 280px;
+                    height: 170px;
+                    pointer-events: none;
+                    padding: 0;
+                    margin: 0;"
+                >
+                </div>
+                <div style="position: absolute; top: 40px; width: 280px; padding: 30px">
+                    <div class="arrow-left" style="float: left; cursor: pointer;" onclick="selectClass(-1)"></div>
+                    <div class="arrow-right" style="float: right; cursor: pointer;" onclick="selectClass(1)"></div>
+                </div>
+                <h2 style="text-align: center" id="CLASS_NAME"></h2>
+                <p id="CLASS_INFO"></p>
+            </span>
+            <div style="text-align: center; font-size: 20px; font-weight: 900; padding-top: 32px">
+                <a href="http://www.shellshock.io/faq.html" style="text-decoration: underline" target="_window">FAQ</a>&nbsp;&nbsp;&nbsp;
+
+                <a href="http://www.shellshock.io/feedback.html" style="text-decoration: underline" target="_window">Contact Us</a>
+            </div>
+        </div>
+
+        <!-- Banner Ad -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%); top: 8px">
+            <a id="bannerAdLink" target="_window"><img id="bannerAdImage"/></a>
+        </div>
+
+        <div style="position: absolute; width: 100%; bottom: 16px; display: block; text-align: center; font-size: 16px; padding-top: 40px">Brought to you by the Egg and Dairy Ministry of Belarus</div>
+
+        <!-- Social media links -->
+        <div style="position: absolute; bottom: 0px; right: 0px; padding: 11px;">
+            <a target="_blank" href="https://www.facebook.com/ShellShockersGame"><img src="img/fbLogo.png"></a>
+            <a target="_blank" href="https://twitter.com/eggcombat"><img src="img/twitterLogo.png"></a>
+            <a target="_blank" href="https://discord.gg/uAXe4qe"><img src="img/discordLogo.png"></a>
+        </div>
+
+        <div id="settingsTip" style="position: absolute; top: 20px; right: 110px;">
+            <h2 style="font-weight: 900">IMPORTANT: Configure controls! &#x2192</h2>
+        </div>
+    </div>
+    <!-- Settings dialog -->
+    <div id="settings" class="settings" style="display: none;">
+        <style>
+            table td { text-align: right; padding-left: 8px; padding-right: 8px; }
+            table div {
+                width: 180px;
+                background: var(--egg-brown);
+                text-align: center;
+                padding: 2px;
+                cursor: pointer;
+            }
+        </style>
+        <h2 style="text-align: center; margin: 8px">Settings</h2>
+        <h2 style="display: block; position: absolute; right: 4px; top: 4px; cursor: pointer;"
+        onclick="closeSettingsMenu()">X</h2>
+        <table style="padding-bottom: 8px">
+            <tr><td>Forward</td><td><div tabindex="1" style="color: #fff" name="config" id="up" onmousedown="configKey(event)">undefined</div></td></tr>
+            <tr><td>Backward</td><td><div tabindex="2" style="color: #aaa" name="config" id="down" onmousedown="configKey(event)">undefined</div></td></tr>
+            <tr><td>Left</td><td><div tabindex="3" style="color: #aaa" name="config" id="left" onmousedown="configKey(event)">undefined</div></td></tr>
+            <tr><td>Right</td><td><div tabindex="4" style="color: #aaa" name="config" id="right" onmousedown="configKey(event)">undefined</div></td></tr>
+            <tr><td>Jump</td><td><div tabindex="5" style="color: #aaa" name="config" id="jump" onmousedown="configKey(event)">undefined</div></td></tr>
+            <tr><td>Fire</td><td><div tabindex="6" style="color: #aaa" name="config" id="fire" onmousedown="configKey(event)">undefined</div></td></tr>
+            <tr><td>Reload</td><td><div tabindex="7" style="color: #aaa" name="config" id="reload" onmousedown="configKey(event)">undefined</div></td></tr>
+            <tr><td>Swap Weapon</td><td><div tabindex="8" style="color: #aaa" name="config" id="weapon" onmousedown="configKey(event)">undefined</div></td></tr>
+
+            <tr><td>Volume</td><td style="text-align: center"><input style="width: 90%" type="range" min="0" max="1" value="1" step="0.01" class="slider" id="volume" onchange="setVolume(this)"></td></tr>
+            <tr><td>Mouse Speed</td><td style="text-align: center"><input style="width: 90%" type="range" min="1" max="9" value="5" step="0.5" class="slider" id="mouseSensitivity" onchange="setMouseSensitivity(this)"></td></tr>
+            <tr><td>Invert Mouse</td><td style="text-align: left"><input id="mouseInvert" type="checkbox" onclick="setMouseInvert(this)"></td></tr>
+        </table>
+    </div>
+
+    <!-- Corner icon buttons -->
+    <div style="position: absolute; right: 16px; top: 16px;">
+        <img id="homeButton" style="visibility: hidden; margin-right: 16px;" class="icon" src="img/home.png" onclick="showMainMenuConfirm()" />
+        <img style="margin-right: 16px;" class="icon" src="img/settings.png" onclick="openSettingsMenu()"/>
+        <img class="icon" src="img/fullScreen.png" onclick="toggleFullscreen()"/>
+    </div>
+
+    <!-- Alert dialog overlay -->
+    <div id="OVERLAY" style="
+        display: none;
+        position: absolute;
+        top: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+    ">
+        <div id="ALERT" style="
+            position: absolute;
+            display: inline-block;
+            padding: 20px;
+            padding-left: 30px;
+            padding-right: 30px;
+            background: white;
+            border-radius: 12px;
+            border-style: solid;
+            border-width: 4px;
+            border-color: var(--egg-brown);
+            left: 50%; top: 45%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            white-space: nowrap;
+        ">
+            <h1 id="ALERT_HEADER"></h1>
+            <h2 id="ALERT_CLOSE" style="position: absolute; right: 4px; top: 4px; cursor: pointer; visibility: hidden">X</h2>
+            <h2 id="ALERT_MESSAGE" style="padding-bottom: 16px"></h2>
+            <h1 id="ALERT_FOOTER" style="display: none">-</h1>
+
+            <div id="alertButton1" class="button" style="width: 100px; display: none">OK</div>
+            <div id="alertButton2" class="button" style="width: 100px; display: none">Cancel</div>
+        </div>
+        <script>
+            startAlertBar();
+        </script>
+    </div>
+</body>
+</html>

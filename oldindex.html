@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+      <title>Babylon Template</title>
+
+      <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+
+    <script src="./babylon.custom.js"></script>
+    <script src="./main.js"></script>
+    <script src='./Box.js'></script>
+    <script src='./Bullet.js'></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    
+
+   </head>
+
+   <body>
+
+    <canvas id="renderCanvas" touch-action="none"></canvas> //touch-action="none" for best results from PEP
+
+    <script>
+
+
+      var canvas = document.getElementById("renderCanvas"); // Get the canvas element 
+
+      var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
+
+
+      /******* Add the create scene function ******/
+      var createScene = function () {
+
+        // Create the scene space
+        var scene = new BABYLON.Scene(engine);
+
+        // Enable physics in the scene
+        var gravityVector = new BABYLON.Vector3(0, -9.8, 0);
+        var physicsPlugin = new BABYLON.OimoJSPlugin();
+        scene.enablePhysics(gravityVector, physicsPlugin);        
+
+        
+
+        // Skybox
+        var skybox = BABYLON.Mesh.CreateBox("skyBox", 10000.0, scene);
+        var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+        skyboxMaterial.backFaceCulling = false;
+        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox", scene);
+        skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+        skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+        skyboxMaterial.disableLighting = true;
+        skybox.material = skyboxMaterial;
+
+
+        // Add a camera to the scene and attach it to the canvas
+        var camera = new BABYLON.UniversalCamera('Camera', new BABYLON.Vector3(0, 0, 10));
+        camera.setTarget(new BABYLON.Vector3(0, 0, 0));
+        camera.ellipsoid = new BABYLON.Vector3(2, 2, 2);
+        //Acceleration of camera in moving from current to goal position
+        camera.speed = 0.5;
+        camera.applyGravity = true;
+        camera.checkCollisions = true;
+
+
+        //The speed at which acceleration is halted 
+        camera.maxCameraSpeed = 10                        
+        camera.attachControl(canvas, true);
+        
+        camera.keysUp.push(87);
+        camera.keysDown.push(83);
+        camera.keysLeft.push(65);
+        camera.keysRight.push(68);
+        camera.ellipsoid = new BABYLON.Vector3(2, 2, 2);
+        scene.camera = camera;
+
+
+        // Add lights to the scene
+        var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+        //var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
+
+        // create the ground plane, position it 10 units downwards and then rotate it to make it flat.
+        var ground = BABYLON.Mesh.CreatePlane("ground", 10000.0, scene);
+        ground.position = new BABYLON.Vector3(0, 0, 0);
+        ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+        ground.checkCollisions = true;
+        ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.00001 }, scene);
+
+        // apply grass material to the ground
+        var grassMaterial = new BABYLON.StandardMaterial(name + "bawl", scene);
+        var grassTexture = new BABYLON.GrassProceduralTexture(name + "textbawl", 25, scene);
+        grassMaterial.ambientTexture = grassTexture;
+        ground.material = grassMaterial;
+
+        //create a box
+        for(var i = 0; i < 100; i++) {
+          var box = BoxConstructor.create(scene);
+          box.position.x = i * 5;
+
+        }
+
+
+
+
+
+        // create a shotgun
+        var barrel = BABYLON.MeshBuilder.CreateCylinder("cone", {
+          diameter: 0.10,
+          height: 0, 
+          tessellation: 96
+        }, scene);
+
+        barrel.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+        barrel.position.y += 5;
+        barrel.position.z += 10;
+
+        var barrel2 = BABYLON.MeshBuilder.CreateCylinder("cone", {
+          diameter: 0.10,
+          height: 0, 
+          tessellation: 96
+        }, scene);
+
+        var newBox = BABYLON.MeshBuilder.CreateBox('box', {
+          height: 1, // length
+          width: 0.2,
+          depth:  0.25// height
+        }, scene);        
+
+        var pbr = new BABYLON.PBRMetallicRoughnessMaterial("pbr", scene);
+
+        pbr.baseColor = new BABYLON.Color3(180, 180, 180);
+        pbr.metallic = 0.5;
+        pbr.roughness = 0.1;
+
+        var woodenCrateMaterial = new BABYLON.StandardMaterial("woodenCrate", scene);
+        woodenCrateMaterial.diffuseTexture = new BABYLON.Texture("./textures/woodenCrate.jpg", scene);
+
+        newBox.parent = barrel
+        newBox.material = woodenCrateMaterial;
+        barrel.material = pbr;
+        barrel2.material = pbr;
+        newBox.position.x += 0.05;
+        newBox.position.z += 0.10; // hieght
+        newBox.position.y += 0.3;
+        barrel2.parent = barrel;
+        barrel2.position.x += 0.10;
+
+        var handle = BABYLON.MeshBuilder.CreateBox('box', {
+          height: 0.2, // length
+          width: 0.2,
+          depth:  0.20// height
+        }, scene); 
+        handle.position.y += 0.75;
+        handle.position.z -= 0;
+
+        handle.parent = newBox;       
+
+        barrel.parent = camera;
+
+        barrel.parent = camera;
+        barrel.position.z -= 8;
+        barrel.position.y -= 5.3;
+        barrel.position.x += 0.8;
+
+        barrel.rotation = new BABYLON.Vector3(Math.PI / 1.8, Math.PI / 1, 0);
+
+        
+
+        
+        // Enable Collisions
+        
+
+        //Then apply collisions and gravity to the active camera
+        
+        
+
+        //Set the ellipsoid around the camera (e.g. your player's size)
+        
+
+        //finally, say which mesh will be collisionable
+        
+
+        return scene;
+      };
+
+          /******* End of the create scene function ******/    
+
+      var scene = createScene(); //Call the createScene function
+
+      decalMaterial = new BABYLON.StandardMaterial("decalMat", scene);
+      decalMaterial.diffuseTexture = new BABYLON.Texture("./textures/impact.png", scene);
+      decalMaterial.diffuseTexture.hasAlpha = true;
+      decalMaterial.zOffset = -2;
+      decalSize = new BABYLON.Vector3(1, 1, 1);
+
+      engine.runRenderLoop(function () { // Register a render loop to repeatedly render the scene
+        camera = scene.camera;
+        BoxConstructor.update();
+        BulletConstructor.update();
+        
+        scene.render();
+      });
+
+
+      window.addEventListener("resize", function () { // Watch for browser/canvas resize events
+        //engine.resize();
+      });
+
+      window.addEventListener("click", function(e) {
+        BulletConstructor.create(scene);
+      })
+
+      // Player constructor
+      var createPlayer = function() {
+
+      }
+    </script>
+
+   </body>
+
+</html>
