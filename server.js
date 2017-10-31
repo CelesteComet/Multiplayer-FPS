@@ -37,6 +37,27 @@ sio.sockets.on('connection', function(client) {
     playerList[data.id] = data.vector3;
   })
 
+  maxSpeed = 1;
+  velocity = 0.1;
+
+  client.on('keypress', function(data) {
+    if(data.key == 'w') {
+      playerList[data.id].x += 1
+    }
+
+    if(data.key == 's') {
+      playerList[data.id].x -= 1;
+    }
+
+    if(data.key == 'a') {
+      playerList[data.id].z += 1;
+    }
+
+    if(data.key =='d') {
+      playerList[data.id].z -= 1;
+    }
+  })
+
 
 
   var lastUpdateTime = (new Date()).getTime();

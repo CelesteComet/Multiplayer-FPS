@@ -61,19 +61,30 @@ Game.prototype.onKeyDown = function(e) {
 
   switch(keyPressed) {
     case "W":
-      this.player.vZ = 0.4 * 0.98
+      socket.emit('keypress', {
+        id: this.player.id,
+        key: 'w'
+      });
       break;
     case "D":
-      this.player.vX = 0.4 * 0.98
+      socket.emit('keypress', {
+        id: this.player.id,
+        key: 'd'
+      });
       break;
     case "S":
-      this.player.vZ = -0.4 * 0.98
+      socket.emit('keypress', {
+        id: this.player.id,
+        key: 's'
+      });
       break;
     case "A":
-      this.player.vX = -0.4 * 0.98
+      socket.emit('keypress', {
+        id: this.player.id,
+        key: 'a'
+      });
       break;
     case "right":
-      console.log("RIGHT")
       this.player.rotation.y += 0.1;
       break;
     case "left":
@@ -151,17 +162,17 @@ Game.prototype.onLoadingComplete = function() {
   
 
   socket.on("playerResponse", function(data) {
-
+    console.log(data);
     for(var id in data) {
-      if(!PlayerManager.list[id] && !EnemyManager.list[id]) {
-        // if it is not a player, and enemy has not been created yet, create an enemy at position
-        EnemyManager.create(id)
-      } else if(EnemyManager.list[id]) {
-        EnemyManager.list[id].position.x = data[id].x;
-        EnemyManager.list[id].position.y = data[id].y;
-        EnemyManager.list[id].position.z = data[id].z;
+      if(PlayerManager.list[id]) {
+        PlayerManager.list[id].position.x = data[id].x;
+        PlayerManager.list[id].position.y = data[id].y;
+        PlayerManager.list[id].position.z = data[id].z;
+      } else {
+        PlayerManager.create(id);
       }
     }
+
   })
 
 

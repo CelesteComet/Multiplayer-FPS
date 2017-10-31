@@ -20,7 +20,7 @@ function PlayerConstructor() {
 
     player.camera = camera;
 
-    
+  
 
     player.update = function() {
       player.position.x += player.vX;
@@ -30,6 +30,11 @@ function PlayerConstructor() {
 
     // give the player an id
     player.id = id;
+
+    socket.emit('playerUpdate', {
+      id: player.id,
+      vector3: player.position
+    })
 
 
     //player.physicsImpostor = new BABYLON.PhysicsImpostor(player, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0.1, restitution: 0.9 }, scene);
@@ -41,11 +46,13 @@ function PlayerConstructor() {
 
   this.update = function() {
     for(var i in this.list) {
-      this.list[i].update();
+      //this.list[i].update();
+      /*
       socket.emit('playerUpdate', {
         id: i,
         vector3: this.list[i].position
       })
+      */
     }
 
   }
