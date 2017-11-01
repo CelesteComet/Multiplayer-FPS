@@ -40,13 +40,15 @@ sio.sockets.on('connection', function(client) {
   maxSpeed = 1;
   velocity = 0.1;
 
-  client.on('keypress', function(data) {
+  client.on('keyDown', function(data) {
     if(data.key == 'w') {
-      playerList[data.id].x += 1
+      //playerList[data.id].x += 1
+      playerList[data.id].pressingW = true;
     }
 
     if(data.key == 's') {
-      playerList[data.id].x -= 1;
+      //playerList[data.id].x -= 1;
+      playerList[data.id].pressingS = true;
     }
 
     if(data.key == 'a') {
@@ -58,12 +60,51 @@ sio.sockets.on('connection', function(client) {
     }
   })
 
+  client.on('keyUp', function(data) {
+    console.log(data)
+    if(data.key == 'w') {
+      //playerList[data.id].x += 1
+      playerList[data.id].pressingW = false;
+    }
+
+    if(data.key == 's') {
+      //playerList[data.id].x -= 1;
+      playerList[data.id].pressingS = false;
+    }
+
+    if(data.key == 'a') {
+      playerList[data.id].z += 1;
+    }
+
+    if(data.key =='d') {
+      playerList[data.id].z -= 1;
+    }
+  })
+
+  function updateAll() {
+    for(id in playerList) {
+      if(playerList[id].pressingW) {
+        playerList[id].x += 0.01;
+      } else {
+        //playerList[id].x = 0;
+      }
+
+      if(playerList[id].pressingS) {
+        playerList[id].x -= 0.01;
+      } else {
+        playerList[id].x += 0;
+      }
+
+    }
+  }
+
 
 
   var lastUpdateTime = (new Date()).getTime();
   setInterval(function() {
     var currentTime = (new Date()).getTime();
     var dt = currentTime - lastUpdateTime;
+    updateAll();
     client.emit("playerResponse", playerList);
     
   }, 1000/60);

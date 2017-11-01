@@ -46,7 +46,7 @@ Game.prototype.captureKeys = function() {
 }
 
 Game.prototype.onKeyDown = function(e) {
-
+  console.log('keydown')
   var inputToControlMap = {
     87: "W",
     68: "D",
@@ -61,25 +61,25 @@ Game.prototype.onKeyDown = function(e) {
 
   switch(keyPressed) {
     case "W":
-      socket.emit('keypress', {
+      socket.emit('keyDown', {
         id: this.player.id,
         key: 'w'
       });
       break;
     case "D":
-      socket.emit('keypress', {
+      socket.emit('keyDown', {
         id: this.player.id,
         key: 'd'
       });
       break;
     case "S":
-      socket.emit('keypress', {
+      socket.emit('keyDown', {
         id: this.player.id,
         key: 's'
       });
       break;
     case "A":
-      socket.emit('keypress', {
+      socket.emit('keyDown', {
         id: this.player.id,
         key: 'a'
       });
@@ -103,10 +103,62 @@ Game.prototype.onKeyDown = function(e) {
   }
 }
 
-Game.prototype.onKeyUp = function() {
-  this.player.vX = 0;
-  this.player.vZ = 0;
-  this.player.vY = 0;
+Game.prototype.onKeyUp = function(e) {
+  console.log('keyup')
+  var inputToControlMap = {
+    87: "W",
+    68: "D",
+    83: "S",
+    65: "A",
+    80: "P",
+    39: "right",
+    37: "left"
+  }
+
+  var keyPressed = inputToControlMap[e.keyCode];
+
+  switch(keyPressed) {
+    case "W":
+      socket.emit('keyUp', {
+        id: this.player.id,
+        key: 'w'
+      });
+      break;
+    case "D":
+      socket.emit('keyUp', {
+        id: this.player.id,
+        key: 'd'
+      });
+      break;
+    case "S":
+      socket.emit('keyUp', {
+        id: this.player.id,
+        key: 's'
+      });
+      break;
+    case "A":
+      socket.emit('keyUp', {
+        id: this.player.id,
+        key: 'a'
+      });
+      break;
+    case "right":
+      this.player.rotation.y += 0.1;
+      break;
+    case "left":
+      this.player.rotation.y -= 0.1;
+      break;
+    case "P":
+      camera = new BABYLON.UniversalCamera('Camera', new BABYLON.Vector3(0, 200, 0), scene);
+      camera.setTarget(new BABYLON.Vector3(0,0,0));
+      break;
+    case "L":
+      camera.parent = this.player;
+      camera.rotation.x = 0;
+      break;
+    default:
+      break;
+  }
 }
 
 
@@ -162,7 +214,6 @@ Game.prototype.onLoadingComplete = function() {
   
 
   socket.on("playerResponse", function(data) {
-    console.log(data);
     for(var id in data) {
       if(PlayerManager.list[id]) {
         PlayerManager.list[id].position.x = data[id].x;
