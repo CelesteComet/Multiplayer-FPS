@@ -35,6 +35,7 @@ sio.sockets.on('connection', function(client) {
 
   client.on('playerUpdate', function(data) {
     playerList[data.id] = data.vector3;
+    playerList[data.id].rotation = {x: 0, y: 0, z: 0}
   })
 
   maxSpeed = 1;
@@ -44,24 +45,38 @@ sio.sockets.on('connection', function(client) {
     if(data.key == 'w') {
       //playerList[data.id].x += 1
       playerList[data.id].pressingW = true;
+      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key == 's') {
       //playerList[data.id].x -= 1;
       playerList[data.id].pressingS = true;
+      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key == 'a') {
-      playerList[data.id].z += 1;
+      playerList[data.id].pressingA = true;
+      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key =='d') {
-      playerList[data.id].z -= 1;
+      playerList[data.id].pressingD = true;
+      playerList[data.id].rotation = data.rotation;
+    }
+
+    if(data.key =='right') {
+      playerList[data.id].pressingRight = true;
+      playerList[data.id].rotation = data.rotation;
+    }
+
+    if(data.key =='left') {
+      playerList[data.id].pressingLeft = true;
+      playerList[data.id].rotation = data.rotation;
     }
   })
 
   client.on('keyUp', function(data) {
-    console.log(data)
+    
     if(data.key == 'w') {
       //playerList[data.id].x += 1
       playerList[data.id].pressingW = false;
@@ -73,26 +88,53 @@ sio.sockets.on('connection', function(client) {
     }
 
     if(data.key == 'a') {
-      playerList[data.id].z += 1;
+      playerList[data.id].pressingA = false;
     }
 
     if(data.key =='d') {
-      playerList[data.id].z -= 1;
+      playerList[data.id].pressingD = false;
+    }
+
+    if(data.key =='right') {
+      playerList[data.id].pressingRight = false;
+      //playerList[data.id].rotation = data.rotation;
+    }
+
+    if(data.key =='left') {
+      playerList[data.id].pressingLeft = false;
+      //playerList[data.id].rotation = data.rotation;
     }
   })
 
   function updateAll() {
+
     for(id in playerList) {
+
       if(playerList[id].pressingW) {
-        playerList[id].x += 0.15;
+        console.log(playerList[id].rotation.y)
+        playerList[id].x += (0.15 * Math.sin(playerList[id].rotation.y))
+        playerList[id].z += (0.15 * Math.cos(playerList[id].rotation.y));
       } else {
-        //playerList[id].x = 0;
+        playerList[id].x += 0;
       }
 
       if(playerList[id].pressingS) {
-        playerList[id].x -= 0.15;
+        playerList[id].x -= (0.15 * Math.sin(playerList[id].rotation.y))
+        playerList[id].z -= (0.15 * Math.cos(playerList[id].rotation.y));
       } else {
         playerList[id].x += 0;
+      }
+
+      if(playerList[id].pressingRight) {
+        playerList[id].rotation.y += 0.01;
+      } else {
+        playerList[id].rotation.y += 0;
+      }
+
+      if(playerList[id].pressingLeft) {
+        playerList[id].rotation.y -= 0.01;
+      } else {
+        playerList[id].rotation.y -= 0;
       }
 
     }

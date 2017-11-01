@@ -63,32 +63,44 @@ Game.prototype.onKeyDown = function(e) {
     case "W":
       socket.emit('keyDown', {
         id: this.player.id,
-        key: 'w'
+        key: 'w',
+        rotation: this.player.rotation
       });
       break;
     case "D":
       socket.emit('keyDown', {
         id: this.player.id,
-        key: 'd'
+        key: 'd',
+        rotation: this.player.rotation
       });
       break;
     case "S":
       socket.emit('keyDown', {
         id: this.player.id,
-        key: 's'
+        key: 's',
+        rotation: this.player.rotation
       });
       break;
     case "A":
       socket.emit('keyDown', {
         id: this.player.id,
-        key: 'a'
+        key: 'a',
+        rotation: this.player.rotation
       });
       break;
     case "right":
-      this.player.rotation.y += 0.1;
+      socket.emit('keyDown', {
+        id: this.player.id,
+        key: 'right',
+        rotation: this.player.rotation
+      });
       break;
     case "left":
-      this.player.rotation.y -= 0.1;
+      socket.emit('keyDown', {
+        id: this.player.id,
+        key: 'left',
+        rotation: this.player.rotation
+      });
       break;
     case "P":
       camera = new BABYLON.UniversalCamera('Camera', new BABYLON.Vector3(0, 200, 0), scene);
@@ -143,10 +155,18 @@ Game.prototype.onKeyUp = function(e) {
       });
       break;
     case "right":
-      this.player.rotation.y += 0.1;
+      //this.player.rotation.y += 0.1;
+      socket.emit('keyUp', {
+        id: this.player.id,
+        key: 'right'
+      });
       break;
     case "left":
-      this.player.rotation.y -= 0.1;
+      //this.player.rotation.y -= 0.1;
+      socket.emit('keyUp', {
+        id: this.player.id,
+        key: 'left'
+      });
       break;
     case "P":
       camera = new BABYLON.UniversalCamera('Camera', new BABYLON.Vector3(0, 200, 0), scene);
@@ -219,6 +239,7 @@ Game.prototype.onLoadingComplete = function() {
         PlayerManager.list[id].position.x = data[id].x;
         PlayerManager.list[id].position.y = data[id].y;
         PlayerManager.list[id].position.z = data[id].z;
+        PlayerManager.list[id].rotation = data[id].rotation;
       } else {
         PlayerManager.create(id);
       }
