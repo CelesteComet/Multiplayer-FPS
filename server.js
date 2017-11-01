@@ -40,8 +40,10 @@ sio.sockets.on('connection', function(client) {
 
   maxSpeed = 1;
   velocity = 0.1;
+  getInput = false;
 
   client.on('keyDown', function(data) {
+    
     if(data.key == 'w') {
       //playerList[data.id].x += 1
       playerList[data.id].pressingW = true;
@@ -73,6 +75,7 @@ sio.sockets.on('connection', function(client) {
       playerList[data.id].pressingLeft = true;
       playerList[data.id].rotation = data.rotation;
     }
+    
   })
 
   client.on('keyUp', function(data) {
@@ -104,6 +107,7 @@ sio.sockets.on('connection', function(client) {
       playerList[data.id].pressingLeft = false;
       //playerList[data.id].rotation = data.rotation;
     }
+    
   })
 
   function updateAll() {
@@ -146,7 +150,9 @@ sio.sockets.on('connection', function(client) {
   setInterval(function() {
     var currentTime = (new Date()).getTime();
     var dt = currentTime - lastUpdateTime;
+    
     updateAll();
+
     client.emit("playerResponse", playerList);
     
   }, 1000/60);
