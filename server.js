@@ -47,33 +47,27 @@ sio.sockets.on('connection', function(client) {
     if(data.key == 'w') {
       //playerList[data.id].x += 1
       playerList[data.id].pressingW = true;
-      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key == 's') {
       //playerList[data.id].x -= 1;
       playerList[data.id].pressingS = true;
-      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key == 'a') {
       playerList[data.id].pressingA = true;
-      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key =='d') {
       playerList[data.id].pressingD = true;
-      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key =='right') {
       playerList[data.id].pressingRight = true;
-      playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key =='left') {
       playerList[data.id].pressingLeft = true;
-      playerList[data.id].rotation = data.rotation;
     }
     
   })
