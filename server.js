@@ -84,13 +84,13 @@ sio.sockets.on('connection', function(client) {
   function updateAll() {
     for(id in playerList) {
       if(playerList[id].pressingW) {
-        playerList[id].x += 0.01;
+        playerList[id].x += 0.15;
       } else {
         //playerList[id].x = 0;
       }
 
       if(playerList[id].pressingS) {
-        playerList[id].x -= 0.01;
+        playerList[id].x -= 0.15;
       } else {
         playerList[id].x += 0;
       }
