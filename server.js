@@ -31,11 +31,18 @@ sio.sockets.on('connection', function(client) {
     console.log(`Client ${client.id} connected`)
   }
 
-  
+  client.on('playerCreate', function(data) {
+    playerList[data.id] = {
+      vector3: null,
+      rotation: null
+    };
+  })
 
   client.on('playerUpdate', function(data) {
+    console.log(playerList)
     playerList[data.id] = data.vector3;
     playerList[data.id].rotation = {x: 0, y: 0, z: 0}
+    client.emit("playerResponse", playerList);
   })
 
   maxSpeed = 1;
@@ -94,7 +101,6 @@ sio.sockets.on('connection', function(client) {
 
     if(data.key =='right') {
       playerList[data.id].pressingRight = false;
-      //playerList[data.id].rotation = data.rotation;
     }
 
     if(data.key =='left') {
@@ -123,6 +129,8 @@ sio.sockets.on('connection', function(client) {
         playerList[id].x += 0;
       }
 
+
+/*
       if(playerList[id].pressingRight) {
         playerList[id].rotation.y += 0.01;
       } else {
@@ -134,7 +142,7 @@ sio.sockets.on('connection', function(client) {
       } else {
         playerList[id].rotation.y -= 0;
       }
-
+*/
     }
   }
 
@@ -145,11 +153,11 @@ sio.sockets.on('connection', function(client) {
     var currentTime = (new Date()).getTime();
     var dt = currentTime - lastUpdateTime;
     
-    updateAll();
+    //updateAll();
 
-    client.emit("playerResponse", playerList);
     
-  }, 1000/60);
+    
+  }, 1000/1000);
 
 
 
